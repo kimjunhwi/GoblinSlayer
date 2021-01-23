@@ -1,0 +1,23 @@
+image,MRrank,Ename,hp,speed,damage,"attack
+delay",point
+,1,Slime,8,1.8,1,0,1
+,1,Goblin,10,1.8,2,0,1
+,2,Skeleton,15,2.1,2,0,2
+,3,Skeleton knight,20,1.8,3,0,3
+,4,Hob Goblin,25,1.8,4,0,4
+,4,Sling Goblin,20,1.5,4,1.5,4
+,5,Elite Goblin,35,2,5,0,4
+,6,Bat,20,2,4,0,4
+,7,Little devil,40,2,10,0,5
+,8,Devil Goblin,45,2,15,0,6
+,8,Goblin slime,40,1.8,10,0,6
+,9,Goblin Xiamen,45,1.5,15,1.5,7
+,10,Heavy Goblin,50,1.5,20,0,8
+,11,Champion,55,2,25,0,8
+,12,Troll,60,1.8,25,0,9
+,13,Beast,65,2.4,20,0,10
+,14,Ouger,70,1.5,30,0,11
+,15,Goblin lord,80,2,40,0,12
+,16,Vampire,90,2,40,0,13
+,17,Necromancer,90,1.8,45,1,14
+,18,Chaos eye,110,1.5,50,1,15

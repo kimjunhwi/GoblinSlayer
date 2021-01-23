@@ -1,0 +1,6 @@
+image,Ename,hp,speed,price,skill,"basic
+weapon",,,
+,Newcomer,100,2,,,Club,,,
+,Knight,120,2,2000,Aweapon damage*1.2,Long sword,,,
+,Ranger,110,2.5,2000,Cweapon damage*1.2,Pistol,,,
+,Wizard,90,1.9,2500,Skill delay*0.8,Wand,,,

@@ -1,0 +1,21 @@
+image,Ename,rank,damage,"attack
+delay","knock
+back",skill,,,,Kname
+,Club,C,1,2,1,,,,,°ïºÀ
+,Dagger,C,1,1.7,0.5,,,,,´Üµµ
+,Hammer,C,3,3,1.3,,,,,ÇØ¸Ó
+,Long sword,C,2,2,1,,,,,·Õ¼Òµå
+,Mace,C,4,3,1.3,,,,,Ã¶Åð
+,Hexdrinker,C,3,2.5,1,,,,,ÁÖ¹®Æ÷½ÄÀÚ
+,Shovels,C,3,3,1.5,exp*1.1,,,,»ð
+,BloodThirster,B,5,2,1.2,damage 0.5% heel,,,,ÇÇ¹Ù¶ó±â
+,Katana,B,4,1.7,1,speed*1.1,,,,Ä«Å¸³ª
+,Great sword,B,10,3,1.5,,,,,´ë°Ë
+,Shortel,B,4,1.5,0.5,,,,,¼îÅÚ
+,B.F sword,A,20,2,1.2,5% guard,,,,B.F ´ë°Ë
+,Executioner's axe,A,30,3,1.5,2% death,,,,Ã³ÇüÀÎÀÇ µµ³¢
+,Sanguine Blade,A,20,2,1.2,damage 2% heel,,,,ÇÍºû Ä®³¯
+,Black Cleaver,A,30,3,1.5,30s skill,,,,¾ÏÈæº° µµ³¢
+,Melted heart,S,45,2,1.3,30s skill,,,,³ì¾Æ³»¸° ½ÉÀå
+,Old dragonhead,S,45,2,1.5,5% death,,,,°í·æÀÇ ¸Ó¸®
+,Perpetual snows,S,45,2,1.3,30s skill,,,,¸¸³â¼³
