@@ -11,17 +11,6 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField] bool ToMonster = false;
     void OnTriggerEnter2D(Collider2D col)
     {
-        // Debug.Log(string.Format("trigger {0}", col.gameObject.name));
-        // col.attachedRigidbody.AddForce()
-        Vector3 Direaction = (col.transform.position - transform.position).normalized;
-        if(ToMonster)
-        {
-            col.GetComponent<Monster_Controller>().BeAttacked(Damage, Direaction, KnockbackForce, TargetStunTime);
-            // GetComponentInParent<Character_Controller>().Stun(SelfStunTime);
-        }else
-        {
-            col.GetComponent<Character_Controller>().BeAttacked(Damage, Direaction, KnockbackForce, TargetStunTime);
-            GetComponentInParent<Monster_Controller>()._Stun(SelfStunTime);
-        }
+        
     }
 }

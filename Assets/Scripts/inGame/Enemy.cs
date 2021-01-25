@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monster_Controller : MonoBehaviour
+public class Enemy : Controller
 {
     [SerializeField] Animator m_Animator;
     [SerializeField] Rigidbody2D m_Rigidbody;

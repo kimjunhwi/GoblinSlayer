@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -11,6 +11,7 @@ public class Map_Generator : MonoBehaviour
     [SerializeField] Vector2Int m_CardSize = new Vector2Int(32, 32);
     [SerializeField] Vector2Int m_Offset = new Vector2Int(-16, -16);
     [SerializeField] Transform m_Target;
+    
     public void Generate_Tilemap()
     {
         Vector3Int[] positions = new Vector3Int[m_CardSize.x * m_CardSize.y];
