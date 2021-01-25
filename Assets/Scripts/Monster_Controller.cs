@@ -12,14 +12,19 @@ public class Monster_Controller : MonoBehaviour
     [SerializeField] float m_StopDistance = 0.1f;
     [SerializeField] float m_Hp = 10;
     [SerializeField] bool isStun;
+
+    void Start()
+    {
+        m_Target = GameObject.Find("Character").GetComponent<Transform>();
+    }
     void Update()
     {
         if(isStun)
         {
             return;
         }
-        // TryMove();
-        // TryDie();
+        TryMove();
+        TryDie();
     }
     void TryMove()
     {

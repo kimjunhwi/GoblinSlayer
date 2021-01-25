@@ -26,13 +26,6 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IBeginDragHa
 
     void Update()
     {
-        if( Input.GetMouseButtonDown(0))
-        {
-            BaseTransform.gameObject.SetActive(true);
-            BaseTransform.transform.position = Input.mousePosition;
-            Debug.LogWarning("Begin");
-        }
-
         // if(Input.touchCount > 0)
         // {
         //     Touch touch =Input.GetTouch(0);
@@ -51,7 +44,8 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IBeginDragHa
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.LogWarning("------------");
+        BaseTransform.transform.position = eventData.position;
+        BaseTransform.gameObject.SetActive(true);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
