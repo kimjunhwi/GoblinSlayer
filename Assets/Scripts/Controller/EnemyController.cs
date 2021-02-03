@@ -19,6 +19,8 @@ public class EnemyController : MonoBehaviour
     
     
 
+    Vector2Int beforVector = new Vector2Int();
+
     public void Init(Transform _playerPosition)
     {
         enemy_List.Clear();
@@ -37,8 +39,36 @@ public class EnemyController : MonoBehaviour
 
         enemyObject.transform.position = playerPosition.position + (createEnemyPosition * Random.Range(5, 10));
 
-        // Enemy enemy = enemyObject.GetComponent<Enemy>();
+        Enemy enemy = enemyObject.GetComponent<Enemy>();
 
-        // enemy_List.Add(enemy);
+        enemy_List.Add(enemy);
+   }
+
+   public void Update()
+   {
+       if(enemy_List.Count != 0)
+        {
+            var player = new Vector2Int(Mathf.RoundToInt(playerPosition.position.x),Mathf.RoundToInt(playerPosition.position.y));
+            
+            enemy_List[0].MoveUpdate();
+            
+            if(beforVector == player)
+                return;
+
+            beforVector = player;
+
+            Debug.LogWarning("EnemyPosition : " + new Vector2Int(Mathf.RoundToInt(enemy_List[0].transform.position.x),Mathf.RoundToInt( enemy_List[0].transform.position.y)));
+            Debug.LogWarning("PlayerPosition : " + beforVector);
+
+            enemy_List[0].InitPosition(playerPosition, new Vector2Int(Mathf.RoundToInt(enemy_List[0].transform.position.x),Mathf.RoundToInt( enemy_List[0].transform.position.y)),
+                                        beforVector);
+            enemy_List[0].PathFinding();
+            
+        }
+   }
+
+   public void EnemyMove ()
+   {
+       
    }
 }

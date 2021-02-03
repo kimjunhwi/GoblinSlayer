@@ -11,6 +11,10 @@ public class Map_Generator : MonoBehaviour
     [SerializeField] Vector2Int m_CardSize = new Vector2Int(32, 32);
     [SerializeField] Vector2Int m_Offset = new Vector2Int(-16, -16);
     [SerializeField] Transform m_Target;
+    [SerializeField] Transform m_StartSlime;
+
+    Vector2Int minVecotr = new Vector2Int();
+    Vector2Int maxVector = new Vector2Int();
     
     public void Generate_Tilemap()
     {
@@ -36,6 +40,97 @@ public class Map_Generator : MonoBehaviour
             tileArray[index] = m_TileBackground[(Random.Range(0,100) > 15)?0:Random.Range(1, m_TileBackground.Length)];
         }
         m_Tilemap.SetTiles(positions, tileArray);
+    }
+
+    public void GetTilemapGrid()
+    {
+        if(m_StartSlime == null)
+            return;
+
+        Vector3Int vecPlayer = Convert(m_Target.position);
+
+
+        Debug.LogWarning (m_Tilemap.GetTile(vecPlayer).name);
+
+        int Slime_x = Mathf.RoundToInt(m_StartSlime.position.x);
+        int Slime_y = Mathf.RoundToInt(m_StartSlime.position.y);
+        
+        int Target_x = Mathf.RoundToInt(m_Target.position.x);
+        int Target_y = Mathf.RoundToInt(m_Target.position.y);
+
+        int nMinX = Slime_x < Target_x ? Slime_x : Target_x;
+        int nMinY = Slime_y < Target_y ? Slime_y : Target_y;
+
+        int nMaxX = Slime_x < Target_x ? Target_x : Slime_x;
+        int nMaxY = Slime_y < Target_y ? Target_y : Slime_y;
+        
+        minVecotr.x = nMinX;
+        minVecotr.y = nMinY;
+
+        maxVector.x = nMaxX;
+        maxVector.y = nMaxY;
+
+        Debug.LogWarning(minVecotr);
+        Debug.LogWarning(maxVector);
+    }
+
+    public Vector3Int Convert(Vector3 _data)
+    {
+        return new Vector3Int(Mathf.RoundToInt(_data.x), Mathf.RoundToInt(_data.y),0);
+    }
+
+    // draw the grid :) 
+	void OnDrawGizmos ()
+	{
+        if(m_StartSlime == null)
+            return;
+       Gizmos.matrix = transform.localToWorldMatrix;
+ 
+		// set colours
+		Color dimColor = new Color(0,0,0,255); 
+		Color brightColor = new Color(0,0,0,255); 
+ 
+		// draw the horizontal lines
+		for (int x = minVecotr.x; x < maxVector.x+1; x++)
+		{
+			// find major lines
+			Gizmos.color = dimColor;
+			if (x == 0)
+				Gizmos.color = brightColor;
+ 
+			Vector3 pos1 = new Vector3(x, minVecotr.y, 0) * 1;  
+			Vector3 pos2 = new Vector3(x, maxVector.y, 0) * 1;  
+ 
+			// convert to topdown/overhead units if necessary
+			if (false)
+			{
+				pos1 = new Vector3(pos1.x, 0, pos1.y); 
+				pos2 = new Vector3(pos2.x, 0, pos2.y); 
+			}
+ 
+			Gizmos.DrawLine ((Vector3.zero + pos1), (Vector3.zero + pos2)); 
+		}
+ 
+		// draw the vertical lines
+		for (int y = minVecotr.y; y < maxVector.y + 1; y++)
+		{
+			// find major lines
+			Gizmos.color = dimColor;
+			if (y == 0)
+				Gizmos.color = brightColor;
+ 
+			Vector3 pos1 = new Vector3(minVecotr.x, y, 0) * 1;  
+			Vector3 pos2 = new Vector3(maxVector.x, y, 0) * 1;  
+ 
+			// convert to topdown/overhead units if necessary
+			if (false)
+			{
+				pos1 = new Vector3(pos1.x, 0, pos1.y); 
+				pos2 = new Vector3(pos2.x, 0, pos2.y); 
+			}
+ 
+			Gizmos.DrawLine ((Vector3.zero + pos1), (Vector3.zero + pos2)); 
+		}
     }
 
     public Vector3Int GetGridPosition(Vector3 worldPos)

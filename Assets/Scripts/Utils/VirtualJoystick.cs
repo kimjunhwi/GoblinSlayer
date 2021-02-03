@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IPointerUpHandler , IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField]
     private RectTransform lever;
@@ -48,6 +48,11 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IBeginDragHa
         BaseTransform.gameObject.SetActive(true);
     }
 
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        BaseTransform.gameObject.SetActive(false);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         ControlJoystickLever(eventData);
@@ -81,5 +86,6 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IBeginDragHa
     void InputControlVector()
     {
         player.Move(InputDirection);
+        player.UpdateRollMoving();
     }
 }

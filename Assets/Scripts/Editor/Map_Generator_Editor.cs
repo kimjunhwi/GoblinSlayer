@@ -19,5 +19,12 @@ public class Map_Generator_Editor : Editor
         {
             generator.ClearAllTiles();
         }
+
+        if(GUILayout.Button("Get Tilemap Grid"))
+        {
+            generator.GetTilemapGrid();
+        }
+
+
     }
 }
