@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using junkaki;
 
 public class EnemyController : MonoBehaviour
 {
@@ -26,6 +25,9 @@ public class EnemyController : MonoBehaviour
         enemy_List.Clear();
 
         playerPosition = _playerPosition;
+
+        RespawnEnemy();
+        RespawnEnemy();
     }
 
     public void RespawnEnemy()
@@ -37,7 +39,10 @@ public class EnemyController : MonoBehaviour
 		createEnemyPosition.x = Random.Range(-1, 1);
 		createEnemyPosition.y = Random.Range(-1, 1);
 
-        enemyObject.transform.position = playerPosition.position + (createEnemyPosition * Random.Range(5, 10));
+        createEnemyPosition.x *= Random.Range(10,20);
+        createEnemyPosition.y *= Random.Range(10,20);
+
+        enemyObject.transform.position = playerPosition.position + (createEnemyPosition);
 
         Enemy enemy = enemyObject.GetComponent<Enemy>();
 
@@ -46,25 +51,18 @@ public class EnemyController : MonoBehaviour
 
    public void Update()
    {
-       if(enemy_List.Count != 0)
-        {
-            var player = new Vector2Int(Mathf.RoundToInt(playerPosition.position.x),Mathf.RoundToInt(playerPosition.position.y));
-            
-            enemy_List[0].MoveUpdate();
-            
-            if(beforVector == player)
-                return;
+       var player = new Vector2Int(Mathf.RoundToInt(playerPosition.position.x),Mathf.RoundToInt(playerPosition.position.y));
 
+       foreach (var enemy in enemy_List)
+       {     
             beforVector = player;
 
-            Debug.LogWarning("EnemyPosition : " + new Vector2Int(Mathf.RoundToInt(enemy_List[0].transform.position.x),Mathf.RoundToInt( enemy_List[0].transform.position.y)));
-            Debug.LogWarning("PlayerPosition : " + beforVector);
-
-            enemy_List[0].InitPosition(playerPosition, new Vector2Int(Mathf.RoundToInt(enemy_List[0].transform.position.x),Mathf.RoundToInt( enemy_List[0].transform.position.y)),
+            enemy.InitPosition(playerPosition, new Vector2Int(Mathf.RoundToInt(enemy.transform.position.x),Mathf.RoundToInt(enemy.transform.position.y)),
                                         beforVector);
-            enemy_List[0].PathFinding();
-            
-        }
+            enemy.PathFinding();
+
+            enemy.MoveUpdate();
+       }
    }
 
    public void EnemyMove ()

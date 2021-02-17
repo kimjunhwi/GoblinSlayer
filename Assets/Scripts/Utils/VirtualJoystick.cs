@@ -19,23 +19,74 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IPointerUpHa
     [SerializeField]
     Player player;
 
+
+    #region 조이스틱 사이드 빛
+
+    enum E_DIRECTION
+    {
+        E_LEFT_UP,
+        E_RIGHT_UP,
+        E_LEFT_DOWN,
+        E_RIGHT_DOWN,
+        E_NONE,
+    }
+
+    E_DIRECTION e_Direction = E_DIRECTION.E_NONE;
+
+    [SerializeField]
+    GameObject[] SideLight;
+
+    #endregion
+
     void Awake()
     {
-         BaseTransform.gameObject.SetActive(false);
+        AllDisableSideLight();
+    }
+
+    void AllDisableSideLight()
+    {
+        e_Direction = E_DIRECTION.E_NONE;
+
+        foreach (var LightObj in SideLight)
+        {
+            LightObj.SetActive(false);
+        }
+    }
+
+    void SideLightCheck(Vector2 vecPosition)
+    {
+        var checkDirectionEnum = E_DIRECTION.E_NONE;
+
+        if(vecPosition.x < 0 && vecPosition.y > 0)
+        {
+            checkDirectionEnum = E_DIRECTION.E_LEFT_UP;
+        }
+        else if(vecPosition.x > 0 && vecPosition.y > 0)
+        {
+            checkDirectionEnum = E_DIRECTION.E_RIGHT_UP;
+        }
+        else if(vecPosition.x < 0 && vecPosition.y < 0)
+        {
+            checkDirectionEnum = E_DIRECTION.E_LEFT_DOWN;
+        }
+        else if(vecPosition.x > 0 && vecPosition.y < 0)
+        {
+            checkDirectionEnum = E_DIRECTION.E_RIGHT_DOWN;
+        }
+
+        if(e_Direction == checkDirectionEnum || checkDirectionEnum == E_DIRECTION.E_NONE)
+            return;
+
+        if(e_Direction != E_DIRECTION.E_NONE)
+            SideLight[(int)e_Direction].SetActive(false);
+        
+        SideLight[(int)checkDirectionEnum].SetActive(true);
+
+        e_Direction = checkDirectionEnum;
     }
 
     void Update()
     {
-        // if(Input.touchCount > 0)
-        // {
-        //     Touch touch =Input.GetTouch(0);
-
-        //     if(touch.phase == TouchPhase.Began)
-        //     {
-        //         Debug.LogWarning("Begin");
-        //     }
-        // }
-
         if(isInput)
         {
             InputControlVector();
@@ -44,13 +95,10 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IPointerUpHa
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        BaseTransform.transform.position = eventData.position;
-        BaseTransform.gameObject.SetActive(true);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        BaseTransform.gameObject.SetActive(false);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -67,11 +115,13 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IPointerUpHa
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        lever.anchoredPosition = Vector2.zero;
         isInput = false;
-        player.Move(Vector2.zero);
 
-        BaseTransform.gameObject.SetActive(false);
+        AllDisableSideLight();
+
+        player.Move(Vector2.zero);
+        
+        lever.anchoredPosition = Vector2.zero;
     }
 
     void ControlJoystickLever(PointerEventData eventData)
@@ -81,6 +131,8 @@ public class VirtualJoystick : MonoBehaviour , IPointerDownHandler, IPointerUpHa
 
         lever.anchoredPosition = inputVector;
         InputDirection = inputVector / leverRange;
+
+        SideLightCheck(lever.anchoredPosition);
     }
 
     void InputControlVector()

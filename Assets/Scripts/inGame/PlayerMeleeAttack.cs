@@ -4,21 +4,50 @@ using UnityEngine;
 
 public class PlayerMeleeAttack : MonoBehaviour
 {
-    [SerializeField] int Damage = 10;
-    [SerializeField] float KnockbackForce = 3f;
-    [SerializeField] float TargetStunTime = 0.5f;
-    [SerializeField] float SelfStunTime = 0.5f;
-    [SerializeField] bool ToMonster = false;
+    WeaponParam param;
 
-    void OnTriggerEnter2D(Collider2D col)
+    [SerializeField]
+    SpriteRenderer weaponSprite;
+
+    [SerializeField]
+    private HashSet<Enemy> list = null;
+    private void Awake(){ this.list = new HashSet<Enemy>(); }
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        //var Enemy = inGameManager.Instance.Enemies.Equals(col.gameObject.GetInstanceID());
-          
-        //if(Enemy != null)
-        //{
-            Vector2 Direction = (Vector2)(col.transform.position - transform.position).normalized;
-            col.GetComponent<Monster_Controller>().BeAttacked(Damage, Direction, KnockbackForce, TargetStunTime);
-            //Enemy.BeAttacked(Damage, Direction, KnockbackForce, TargetStunTime);
-        //}
+         Enemy enemy = col.transform.GetComponent<Enemy>();
+         if(enemy != null)
+         {
+             this.list.Add(enemy); 
+             Vector2 Direction = (Vector2)(col.transform.position - transform.position).normalized;
+             col.GetComponent<Enemy>().BeAttacked(param.Damage, Direction, param.knockbackForce, param.targetSturnTime);  
+         } 
+    }
+    private void OnTriggerExit2D(Collider2D col)
+    {
+         Enemy enemy = col.transform.GetComponent<Enemy>();
+         if(enemy != null && this.list.Contains(enemy) == true)
+         {
+             this.list.Remove(enemy);  
+         } 
+    }
+
+    public void InitWeapon(WeaponParam p)
+    {
+        param = p;
+        weaponSprite.sprite = p.WeaponSprite;
+    }
+
+    public void InitWeapon()
+    {
+        weaponSprite.sprite = param.WeaponSprite;
+    }
+
+    public class WeaponParam
+    {
+        public Sprite WeaponSprite;
+
+        public int Damage;
+        public float knockbackForce;
+        public float targetSturnTime;
     }
 }

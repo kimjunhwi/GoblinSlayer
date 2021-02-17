@@ -22,6 +22,24 @@ public class Player : MonoBehaviour
 
     Vector2 inputDirection = Vector2.zero;
 
+    [SerializeField]
+    Sprite weaponSprite;
+    [SerializeField]
+    PlayerMeleeAttack meleeAttack;
+
+
+    #region 공격 처리 관련
+
+    float fAttackSpeed = 2f;
+
+    [SerializeField]
+    float fCurrentAttackSpeed = 0f;
+
+    [SerializeField]
+    GameObject targetEnemyObject = null;
+
+    #endregion
+
     #region  구르기
 
     float rollMoveSpeed = 10;
@@ -44,6 +62,39 @@ public class Player : MonoBehaviour
     public float MoveSpeed {get; private set;}
     public int Enhance { get; private set;}
 
+    //나중에 Init든 뭐든 초기화로 수정할 예정
+    void Start()
+    {
+        PlayerMeleeAttack.WeaponParam p = new PlayerMeleeAttack.WeaponParam();
+
+        p.Damage = 10;
+        p.knockbackForce =3;
+        p.targetSturnTime = 1;
+        p.WeaponSprite = weaponSprite;
+
+        meleeAttack.InitWeapon(p);
+    }
+
+    void Update()
+    {
+        if(targetEnemyObject != null)
+        {
+            var direction = (targetEnemyObject.transform.position - transform.position).normalized;
+            float rotation_z = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            m_Attack_Direction.localRotation = Quaternion.Euler(0,0,rotation_z);
+        }
+
+        if(targetEnemyObject != null && fCurrentAttackSpeed <= 0)
+        {
+            fCurrentAttackSpeed = fAttackSpeed;
+            m_Animator.SetTrigger("Attack_Club_0");
+        }
+        else  if(fCurrentAttackSpeed > 0)
+        {
+            fCurrentAttackSpeed -= Time.deltaTime;
+        }
+    }
+
     public void Move(Vector2 _inputDirection)
     {
         inputDirection = _inputDirection;
@@ -53,13 +104,18 @@ public class Player : MonoBehaviour
             if(isFlipX!=(inputDirection.x < 0))
                 FlipX(isFlipX = inputDirection.x < 0);
         }
+        if(inputDirection.x!=0 || inputDirection.y !=0)
+        {
+            m_Direction = new Vector2(inputDirection.x, inputDirection.y).normalized;
+            float rotation_z = Mathf.Atan2(m_Direction.y, m_Direction.x) * Mathf.Rad2Deg;
+            m_Attack_Direction.localRotation = Quaternion.Euler(0,0,rotation_z);
+        }
         
         m_Animator.SetFloat("Vector_Y", inputDirection.y);
         m_Animator.SetFloat("Vector_X", inputDirection.x);
 
         inputDirection.Normalize();
         bool isMove = inputDirection.x != 0 || inputDirection.y != 0;
-		//ChangeAnimState(); //isMove ? BodyState.Move : BodyState.Idle);
     }
 
     public void UpdateRollMoving()
@@ -100,31 +156,30 @@ public class Player : MonoBehaviour
         }
     }
 
-    // void ChangeAnimState(BodyState _bodyState)
-	// {
-	// 	if (bodyState == _bodyState)
-	// 		return;
+    public void TryAttackClub0()
+    {
+		m_Animator.SetTrigger("Attack_Club_0");
+    }
 
-	// 	bodyState = _bodyState;
+    public void EndAttackMotion()
+    {
+        meleeAttack.InitWeapon();
+    }
 
-	// 	string stateName = string.Empty;
-	// 	switch (bodyState)
-	// 	{
-	// 		case BodyState.Idle: stateName = "Player_Idle"; break;
-	// 		case BodyState.Move: stateName = "Player_Move"; break;
-	// 		case BodyState.Die: stateName = "Player_Die"; break;
-	// 	}
+    void OnTriggerEnter2D( Collider2D other )
+    {
+        if(other.tag.Contains("Monster"))
+        {
+            if(targetEnemyObject == null)
+                targetEnemyObject = other.gameObject;
+        }
+    }
 
-	// 	bodyAnimator.Play(stateName);		
-	// }
-
-    // void TryAttackClub0()
-    // {
-    //     if(Input.GetButtonDown("Fire1"))
-	// 	{
-	// 		m_Animator.SetTrigger("Attack_Club_0");
-	// 	}
-    // }
+    void OnTriggerExit2D( Collider2D other)
+    {
+        if(other.gameObject == targetEnemyObject)
+            targetEnemyObject = null;
+    }
 
     void FlipX(bool isFlip)
     {

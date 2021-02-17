@@ -17,7 +17,7 @@ public class PoolManager : MonoBehaviour
 
 	void Start()
 	{
-		//PreLoad("Bullet");
+		PreLoad("Slime");
 	}
 
 	public static GameObject Get(string name)

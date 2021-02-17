@@ -15,6 +15,9 @@ public class Map_Generator : MonoBehaviour
 
     Vector2Int minVecotr = new Vector2Int();
     Vector2Int maxVector = new Vector2Int();
+
+    [SerializeField]
+    public List<Vector3Int> offsetList = new List<Vector3Int>();
     
     public void Generate_Tilemap()
     {
@@ -31,6 +34,8 @@ public class Map_Generator : MonoBehaviour
 
     public void Generate_Tilemap(Vector3Int m_Offset)
     {
+        offsetList.Add(m_Offset);
+
         Vector3Int[] positions = new Vector3Int[m_CardSize.x * m_CardSize.y];
         TileBase[] tileArray = new TileBase[positions.Length];
 
@@ -39,7 +44,21 @@ public class Map_Generator : MonoBehaviour
             positions[index] = new Vector3Int(index % m_CardSize.x + m_Offset.x, index / m_CardSize.x + m_Offset.y, 0);
             tileArray[index] = m_TileBackground[(Random.Range(0,100) > 15)?0:Random.Range(1, m_TileBackground.Length)];
         }
+
         m_Tilemap.SetTiles(positions, tileArray);
+    }
+
+    public void Proportion_Clear_Tilemap(Vector3Int m_Offset)
+    {
+        Vector3Int[] positions = new Vector3Int[m_CardSize.x * m_CardSize.y];
+
+        for (int index = 0; index < positions.Length; index++)
+        {
+            positions[index] = new Vector3Int(index % m_CardSize.x + m_Offset.x, index / m_CardSize.x + m_Offset.y, 0);
+             m_Tilemap.SetTile(positions[index],null);    
+        }
+
+        m_Tilemap.SetTiles(positions, null);
     }
 
     public void GetTilemapGrid()
@@ -48,9 +67,6 @@ public class Map_Generator : MonoBehaviour
             return;
 
         Vector3Int vecPlayer = Convert(m_Target.position);
-
-
-        Debug.LogWarning (m_Tilemap.GetTile(vecPlayer).name);
 
         int Slime_x = Mathf.RoundToInt(m_StartSlime.position.x);
         int Slime_y = Mathf.RoundToInt(m_StartSlime.position.y);
@@ -159,10 +175,26 @@ public class Map_Generator : MonoBehaviour
                 (now.x + D[d, 0]) * m_CardSize.x + m_Offset.x,
                 (now.y + D[d, 1]) * m_CardSize.y + m_Offset.y,
                 0);
-            // Debug.Log(string.Format("there : {0}", there));
+            
             if (ReferenceEquals(m_Tilemap.GetTile(there), null))
             {
                 Generate_Tilemap(there);
+
+                // var deleteList = new List<Vector3Int>();
+
+                // foreach (var offset in offsetList)
+                // {
+                //     if(Vector3Int.Distance(now,offset) > 50)
+                //     {
+                //         deleteList.Add(offset);
+                //         Proportion_Clear_Tilemap(offset);
+                //     }
+                // }
+
+                // for(int nIndex = deleteList.Count -1 ; nIndex >= 0; nIndex--)
+                // {
+                //     offsetList.Remove(deleteList[nIndex]);
+                // }
             }
         }
     }

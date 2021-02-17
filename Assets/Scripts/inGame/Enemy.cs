@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Jobs;
+using UnityEngine.Jobs;
 using System.Linq;
 
 [System.Serializable]
@@ -60,24 +62,22 @@ public class Enemy : Controller
     [SerializeField] float m_StopDistance = 0.1f;
     [SerializeField] float m_Hp = 10;
     [SerializeField] bool isStun;
-    
-    /// TEst
-
-    //
-    public List<Collider2D> testCollider = new List<Collider2D>();
 
     Vector3Int vecCheckTile = Vector3Int.zero;
 
     public void MoveUpdate()
     {
-        if (finalNodeList.Count <= 1) 
-            return;
+        if(!isStun)
+        {
+            if (finalNodeList.Count <= 1) 
+                return;
 
-        Vector2 FinalNodePos = new Vector2(finalNodeList[1].x, finalNodeList[1].y);
-            transform.position = Vector2.MoveTowards(transform.position, FinalNodePos, m_Speed * Time.deltaTime);
+            Vector2 FinalNodePos = new Vector2(finalNodeList[1].x, finalNodeList[1].y);
+                transform.position = Vector2.MoveTowards(transform.position, FinalNodePos, m_Speed * Time.deltaTime);
 
-        if ((Vector2)transform.position == FinalNodePos)
-            finalNodeList.RemoveAt(0);
+            if ((Vector2)transform.position == FinalNodePos)
+                finalNodeList.RemoveAt(0);
+        }
     }
 
     public void InitPosition(Transform playerPosition, Vector2Int _vecStartPosition , Vector2Int _vecTargetPosition)
@@ -99,27 +99,22 @@ public class Enemy : Controller
     
     public void PathFinding()
     {
-        testCollider.Clear();
-
-
-
         // NodeArrayのサーズを決めて, isWall, x, y 入れる
         sizeX = vecTopRight.x - vecBottomLeft.x + 1;
         sizeY = vecTopRight.y - vecBottomLeft.y + 1;
         NodeArray = new Node[sizeX, sizeY];
 
-        testCollider = Physics2D.OverlapBoxAll(new Vector2(vecBottomLeft.x + (sizeX * 0.5f),vecBottomLeft.y + (sizeY * 0.5f)),
+        var colliders = Physics2D.OverlapBoxAll(new Vector2(vecBottomLeft.x + (sizeX * 0.5f),vecBottomLeft.y + (sizeY * 0.5f)),
                                                          new Vector2(sizeX + 10, sizeY + 10),
                                                          0,
                                                          23 << WallLayer
                                                         ).ToList();
-
+                                                        
         for (int nWidth = 0; nWidth < sizeX; nWidth++)
         {
             for (int nHeight = 0; nHeight < sizeY; nHeight++)
             {
-                Debug.LogWarning(testCollider.Find((x) => x.OverlapPoint(new Vector2(nWidth + vecBottomLeft.x, nHeight + vecBottomLeft.y))) != null);
-                var isWall = testCollider.Find((x) => x.OverlapPoint(new Vector2(nWidth + vecBottomLeft.x, nHeight + vecBottomLeft.y))) != null;
+                var isWall = colliders.Find((x) => x.OverlapPoint(new Vector2(nWidth + vecBottomLeft.x, nHeight + vecBottomLeft.y))) != null;
                 NodeArray[nWidth, nHeight] = new Node(isWall, nWidth + vecBottomLeft.x, nHeight + vecBottomLeft.y);
             }
         }
@@ -202,14 +197,6 @@ public class Enemy : Controller
         }
     }
 
-    void OnDrawGizmos()
-    {
-        if(finalNodeList.Count != 0) 
-            for (int i = 0; i < finalNodeList.Count - 1; i++)
-                Gizmos.DrawLine(new Vector2(finalNodeList[i].x, finalNodeList[i].y), new Vector2(finalNodeList[i + 1].x, finalNodeList[i + 1].y));
-    }
-
-
     ///
 
     void Update()
@@ -218,8 +205,6 @@ public class Enemy : Controller
         {
             return;
         }
-        // TryMove();
-        // TryDie();
     }
     void TryMove()
     {
@@ -257,6 +242,7 @@ public class Enemy : Controller
         isStun = true;
         m_Rigidbody.velocity = Vector3.zero;
         yield return new WaitForSeconds(sec);
+        m_Rigidbody.velocity = Vector3.zero;
         isStun = false;
     }
 
@@ -268,5 +254,14 @@ public class Enemy : Controller
             // m_Animator.SetTrigger("Hit");
             m_Rigidbody.AddForce(Direaction * KnockbackForce, ForceMode2D.Impulse);
         }
+    }
+}
+
+public struct AstarPathFind : IJobParallelForTransform
+{
+
+    public void Execute(int index, TransformAccess transform)
+    {
+
     }
 }

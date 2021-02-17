@@ -48,7 +48,6 @@ public class Character_Controller : MonoBehaviour
             // if(!m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Character_Attack_Club"))
             {
                 m_Direction = new Vector2(InputX, InputY).normalized;
-                Debug.DrawLine(transform.position, transform.position + new Vector3(m_Direction.x, m_Direction.y), Color.red, 1.0f);
                 float rotation_z = Mathf.Atan2(m_Direction.y, m_Direction.x) * Mathf.Rad2Deg;
                 m_Attack_Direction.localRotation = Quaternion.Euler(0,0,rotation_z);
             }

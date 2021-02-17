@@ -28,7 +28,7 @@ public class inGameManager : GenericMonoSingleton<inGameManager>
     {
         enemyController.Init(player.transform);
 
-        enemyController.RespawnEnemy();
+        
         // enemyController.RespawnEnemy();
         
 
