@@ -10,6 +10,8 @@ public class DataManager : MonoBehaviour
     bool isDataAllLoad = false;
     private WeaponData weaponData = new WeaponData();
 
+    public WeaponData WeaponData { get { return weaponData; }}
+
     void Update()
     {
         if(nLoadCount == 0)
